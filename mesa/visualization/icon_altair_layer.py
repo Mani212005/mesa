@@ -1,4 +1,5 @@
 """Altair-specific icon rendering layer for Mesa visualizations.
+
 Builds a layered chart with mark_point (for non-icon agents) and mark_image
 (for icon agents), with optional culling for performance.
 """
@@ -26,6 +27,7 @@ def build_altair_agent_chart(
     enable_culling: bool = True,
 ) -> alt.Chart:
     """Build layered Altair chart for agents with icon support.
+
     Args:
         arguments: Dictionary with agent data (loc, size, color, icon_rasters, etc.)
         space_drawer: SpaceDrawer instance for getting visualization limits

@@ -29,6 +29,7 @@ if TYPE_CHECKING:
 
 class IconCache:
     """Cache for rasterized icon images.
+
     Stores pre-rendered icons as data URLs or numpy arrays to avoid
     redundant rendering operations.
     For bundled icons, pre-rendered PNGs are used (no dependencies required).
@@ -38,6 +39,7 @@ class IconCache:
 
     def __init__(self, backend: Literal["matplotlib", "altair"] = "matplotlib"):
         """Initialize the icon cache.
+
         Args:
             backend: The visualization backend ("matplotlib" or "altair")
         """
@@ -46,6 +48,7 @@ class IconCache:
 
     def get(self, icon_name: str | None, size: int) -> str | np.ndarray | None:
         """Get cached icon or return None if not cached.
+
         Args:
             icon_name: Name of the icon
             size: Size of the icon in pixels
@@ -60,6 +63,7 @@ class IconCache:
 
     def get_or_create(self, icon_name: str, size: int) -> str | np.ndarray | None:
         """Get cached icon or create and cache it.
+
         Args:
             icon_name: Name of the icon to retrieve/create
             size: Size of the icon in pixels
@@ -81,6 +85,7 @@ class IconCache:
 
     def _rasterize_icon(self, icon_name: str, size: int) -> str | np.ndarray | None:
         """Rasterize icon to appropriate format for backend.
+
         Tries in order:
         1. Load pre-rendered PNG (for bundled icons, no dependencies)
         2. Convert SVG to PNG using svglib+reportlab (for custom SVGs, optional)
@@ -134,6 +139,7 @@ class IconCache:
 
     def _create_fallback_circle(self, icon_name: str, size: int) -> str | np.ndarray:
         """Create a colored circle fallback when icon cannot be loaded.
+
         Args:
             icon_name: Icon name (used to choose color)
             size: Size in pixels
@@ -163,6 +169,7 @@ class IconCache:
 
     def _to_data_url(self, img: Image.Image) -> str:
         """Convert PIL Image to data URL for Altair.
+
         Args:
             img: PIL Image to convert
         Returns:
@@ -176,6 +183,7 @@ class IconCache:
 
     def _to_numpy(self, img: Image.Image) -> np.ndarray:
         """Convert PIL Image to numpy array for Matplotlib.
+
         Args:
             img: PIL Image to convert
         Returns:
@@ -186,9 +194,11 @@ class IconCache:
     @classmethod
     def from_png_bytes(cls, png_bytes: bytes, backend: str) -> str | np.ndarray:
         """Convert PNG bytes to appropriate format for backend.
+
         Args:
             png_bytes: Raw PNG image bytes
             backend: Target backend ("matplotlib" or "altair")
+
         Returns:
             Converted image (data URL for altair, numpy array for matplotlib)
         """
@@ -206,6 +216,7 @@ class IconCache:
 
     def __len__(self):
         """Get number of cached icons.
+
         Returns:
             Number of cached icon entries
         """

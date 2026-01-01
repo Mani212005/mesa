@@ -1,4 +1,5 @@
 """Bundled icon access helpers for Mesa visualization.
+
 Provides functions to access bundled icon files (SVG and PNG).
 """
 
@@ -33,8 +34,10 @@ def list_icons() -> list[str]:
 
 def get_icon_svg(name: str) -> str:
     """Return SVG text for a bundled icon.
+
     Args:
         name: Icon name (e.g., "smiley" or "mesa:smiley")
+
     Returns:
         SVG content as string
     Raises:
@@ -49,12 +52,16 @@ def get_icon_svg(name: str) -> str:
 
 def get_icon_png(name: str, size: int) -> bytes:
     """Return pre-rendered PNG bytes for a bundled icon.
+
     Tries: exact size match, unsized file, then any size variant.
+
     Args:
         name: Icon name (e.g., "smiley" or "mesa:smiley")
         size: Desired icon size in pixels
+
     Returns:
         PNG image bytes
+
     Raises:
         FileNotFoundError: If no PNG found
     """
