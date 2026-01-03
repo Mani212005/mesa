@@ -275,7 +275,8 @@ class AltairBackend(AbstractRenderer):
         color_is_numeric = pd.api.types.is_numeric_dtype(df["original_color"])
 
         # Build tooltip list for interactivity
-        tooltip_list = ["x", "y", "original_color", "size"]
+        # Default to coordinates only; users can add meaningful attributes via tooltip_fields
+        tooltip_list = ["x", "y"]
         if tooltip_fields:
             if isinstance(tooltip_fields, str):
                 tooltip_list.append(tooltip_fields)
