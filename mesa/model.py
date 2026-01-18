@@ -37,8 +37,7 @@ class Model[A: Agent]:
 
     Attributes:
         running: A boolean indicating if the model should continue running.
-        steps: (Deprecated) the number of times `model.step()` has been called.
-               Use `model.time` instead.
+        steps: the number of times `model.step()` has been called.
         time: the current simulation time. Automatically increments by 1.0
               with each step unless controlled by a discrete event simulator.
         random: a seeded python.random number generator.
@@ -91,7 +90,7 @@ class Model[A: Agent]:
         """
         super().__init__(*args, **kwargs)
         self.running: bool = True
-        self._steps: int = 0
+        self.steps: int = 0
         self.time: float = 0.0
 
         # Track if a simulator is controlling time
@@ -120,6 +119,12 @@ class Model[A: Agent]:
                 self.random = random.Random(seed)
             self._seed = seed  # this allows for reproducing stdlib.random
         elif rng is None:
+            warnings.warn(
+                "The use of the `seed` keyword argument is deprecated, use `rng` instead. No functional changes.",
+                FutureWarning,
+                stacklevel=2,
+            )
+
             self.random = random.Random(seed)
             self._seed = seed  # this allows for reproducing stdlib.random
 
@@ -151,48 +156,16 @@ class Model[A: Agent]:
             [], random=self.random
         )  # an agenset with all agents
 
-    @property
-    def steps(self) -> int:
-        """Return the number of steps the model has taken.
-
-        Deprecated: Use `model.time` instead.
-        """
-        warnings.warn(
-            "model.steps is deprecated and will be removed in a future Mesa release. "
-            "Use model.time instead, which provides the same functionality for "
-            "discrete-time models and also supports continuous time with DEVS. "
-            "See: https://mesa.readthedocs.io/latest/migration_guide.html#model-steps-deprecated",
-            FutureWarning,
-            stacklevel=2,
-        )
-        return self._steps
-
-    @steps.setter
-    def steps(self, value: int) -> None:
-        """Set the number of steps.
-
-        Deprecated: Use `model.time` instead.
-        """
-        warnings.warn(
-            "model.steps is deprecated and will be removed in a future Mesa release. "
-            "Use model.time instead, which provides the same functionality for "
-            "discrete-time models and also supports continuous time with DEVS. "
-            "See: https://mesa.readthedocs.io/latest/migration_guide.html#model-steps-deprecated",
-            FutureWarning,
-            stacklevel=2,
-        )
-        self._steps = value
-
     def _wrapped_step(self, *args: Any, **kwargs: Any) -> None:
         """Automatically increments time and steps after calling the user's step method."""
         # Automatically increment time and step counters
-        self._steps += 1
+        self.steps += 1
         # Only auto-increment time if no simulator is controlling it
         if self._simulator is None:
             self.time += 1
 
         _mesa_logger.info(
-            f"calling model.step for step {self._steps} at time {self.time}"
+            f"calling model.step for step {self.steps} at time {self.time}"
         )
         # Call the original user-defined step method
         self._user_step(*args, **kwargs)
@@ -282,6 +255,12 @@ class Model[A: Agent]:
         Args:
             seed: A new seed for the RNG; if None, reset using the current seed
         """
+        warnings.warn(
+            "The use of the `seed` keyword argument is deprecated, use `rng` instead. No functional changes.",
+            FutureWarning,
+            stacklevel=2,
+        )
+
         if seed is None:
             seed = self._seed
         self.random.seed(seed)
