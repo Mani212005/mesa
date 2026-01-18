@@ -273,8 +273,12 @@ class SpaceRenderer:
             self.draw_agent_kwargs.update(kwargs)
 
         # Prepare data for agent plotting
+        tooltip_fields = self.draw_agent_kwargs.get("tooltip_fields")
         arguments = self.backend_renderer.collect_agent_data(
-            self.space, self.agent_portrayal, default_size=self.space_drawer.s_default
+            self.space,
+            self.agent_portrayal,
+            default_size=self.space_drawer.s_default,
+            tooltip_fields=tooltip_fields,
         )
         arguments = self._map_coordinates(arguments)
 

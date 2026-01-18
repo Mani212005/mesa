@@ -52,7 +52,11 @@ class AltairBackend(AbstractRenderer):
         return self.space_drawer.draw_altair(**kwargs)
 
     def collect_agent_data(
-        self, space, agent_portrayal: Callable, default_size: float | None = None
+        self,
+        space,
+        agent_portrayal: Callable,
+        default_size: float | None = None,
+        tooltip_fields: list | str | None = None,
     ):
         """Collect plotting data for all agents in the space for Altair.
 
@@ -60,6 +64,7 @@ class AltairBackend(AbstractRenderer):
             space: The Mesa space containing agents.
             agent_portrayal: Callable that returns AgentPortrayalStyle for each agent.
             default_size: Default marker size if not specified in portrayal.
+            tooltip_fields: Fields to collect from agents for tooltips.
 
         Returns:
             dict: Dictionary containing agent plotting data arrays.
@@ -193,11 +198,19 @@ class AltairBackend(AbstractRenderer):
             arguments["filled"].append(filled_value)
 
             # Collect agent attributes
-            for attr_name in ["unique_id", "wealth", "energy", "age", "state"]:
-                if hasattr(agent, attr_name):
-                    if attr_name not in agent_attributes:
-                        agent_attributes[attr_name] = []
-                    agent_attributes[attr_name].append(getattr(agent, attr_name))
+            if tooltip_fields:
+                fields_to_collect = (
+                    [tooltip_fields]
+                    if isinstance(tooltip_fields, str)
+                    else tooltip_fields
+                )
+
+                # Collect each specified attribute from the agent
+                for attr_name in fields_to_collect:
+                    if hasattr(agent, attr_name):
+                        agent_attributes.setdefault(attr_name, []).append(
+                            getattr(agent, attr_name)
+                        )
 
         # Add agent attributes to arguments
         for attr_name, values in agent_attributes.items():
